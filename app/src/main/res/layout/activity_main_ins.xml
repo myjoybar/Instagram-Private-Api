@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.joybar.androidlibutils.MainActivity">
+
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.joybar.androidlibutils.MainActivity"
+    android:orientation="vertical">
+
+
+    <Button
+        android:id="@+id/btn_getcsftoken"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="getCsftoken "
+       />
+
+
+    <Button
+        android:id="@+id/btn_login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="login"
+        />
+
+
+    <Button
+        android:id="@+id/btn_getfeed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="getFeed"
+        />
+
+
+    <Button
+        android:id="@+id/btn_getfeedlike"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="getFeedLike"
+        />
+
+    <Button
+        android:id="@+id/btn_followers"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="get followers"
+        />
+    <Button
+        android:id="@+id/btn_following"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="get following"
+        />
+
+    <Button
+        android:id="@+id/btn_media_likers"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="get media_likers"
+        />
+
+
+    <Button
+        android:id="@+id/btn_media_comments"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="get media_comments"
+        />
+
+
+    <Button
+        android:id="@+id/btn_getUserInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="get getUserInfo"
+        />
+
+    <Button
+        android:id="@+id/btn_following_create"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="following_create"
+
+        />
+
+
+    <Button
+        android:id="@+id/btn_following_cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="following_cancel"
+        />
+
+
+
+    <Button
+        android:id="@+id/btn_media_like"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="media_like"
+        />
+
+    <Button
+        android:id="@+id/btn_media_unlike"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="media_unlike"
+        />
+
+
+</LinearLayout>
+</android.support.v4.widget.NestedScrollView>

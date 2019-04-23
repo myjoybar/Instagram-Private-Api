@@ -7,7 +7,7 @@ group = "com.joybar.insapi"
 def packageName = 'insapi'
 def artifactIdName = 'insapi'
 def projectDescription = 'android instagram private api'
-version = "1.0.2"
+version = "1.1.8"
 
 install {
     repositories.mavenInstaller {
@@ -15,7 +15,6 @@ install {
         pom {
             project {
                 packaging 'aar'
-                artifactId = artifactIdName
                 // Add your description here
                 description projectDescription
                 name ''
@@ -83,3 +82,4 @@ bintray {
 }
 //./gradlew install --info
 //./gradlew bintrayUpload --info
+

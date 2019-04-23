@@ -4,6 +4,8 @@ import android.util.Log;
 
 import com.google.gson.internal.$Gson$Types;
 import com.joy.insapi.manager.IGConfig;
+import com.joy.insapi.response.InsBaseResponseData;
+import com.joy.insapi.response.InsGsonResponseHandler;
 import com.joy.libok.OkHttpManager;
 
 import java.lang.reflect.ParameterizedType;

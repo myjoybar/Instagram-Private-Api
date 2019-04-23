@@ -2,6 +2,7 @@ package com.joy.insapi.request;
 
 
 import com.joy.insapi.manager.IGConfig;
+import com.joy.insapi.response.InsBaseResponseData;
 
 public abstract class InsBaseRequest<R extends InsBaseResponseData> {
 	protected InsRequestCallBack<R> mInsRequestCallBack;

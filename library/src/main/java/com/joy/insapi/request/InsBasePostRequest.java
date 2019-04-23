@@ -6,6 +6,8 @@ import com.google.gson.internal.$Gson$Types;
 import com.joy.insapi.manager.IGConfig;
 import com.joy.insapi.manager.utils.sign.IgSignatureUtils;
 import com.joy.insapi.manager.utils.IGGsonUtil;
+import com.joy.insapi.response.InsBaseResponseData;
+import com.joy.insapi.response.InsGsonResponseHandler;
 import com.joy.libok.OkHttpManager;
 
 import java.lang.reflect.ParameterizedType;
@@ -13,17 +15,15 @@ import java.lang.reflect.Type;
 
 public abstract class InsBasePostRequest <T ,R extends InsBaseResponseData> extends InsBaseRequest<R> {
 	private static final String TAG = "InsBasePostRequest";
-	final T mRequestData;
 
-	public InsBasePostRequest(T requestData) {
-		mRequestData = requestData;
-	}
+
+	protected abstract T getRequestData();
 
 
 	@Override
 	void execute() {
 
-		String payload = IgSignatureUtils.buildBodySignContent(IGGsonUtil.parseBeanToStr(mRequestData));
+		String payload = IgSignatureUtils.buildBodySignContent(IGGsonUtil.parseBeanToStr(getRequestData()));
 		OkHttpManager.getInstance()
 				.post(getRequestUrl())
 				.addBodyContent(payload)

@@ -28,7 +28,7 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    api 'com.joybar.libok:libok:1.0.1'
+    api 'com.joybar.libok:libok:1.0.6'
 }
 
 apply from: 'push.gradle'

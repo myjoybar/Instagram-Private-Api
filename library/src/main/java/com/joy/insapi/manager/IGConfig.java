@@ -21,7 +21,8 @@ public class IGConfig {
 	public static final String ACTION_GET_MEDIA_COMMENTS = "media/%s/comments/";//获取某条post的comment
 	public static final String ACTION_GET_MEDIA_LIKE = "media/%s/like/";//like某条post
 	public static final String ACTION_GET_MEDIA_UNLIKE = "media/%s/unlike/";//unlike某条post
-	public static final String ACTION_GET_USER_INFO = "users/%s/info/";//根据userId获取用户信息
+	public static final String ACTION_GET_USER_INFO_WITH_ID = "users/%s/info/";//根据userId获取用户信息
+	public static final String ACTION_GET_USER_INFO_WITH_USER_NAME = "users/%s/usernameinfo/";//根据userName获取用户信息
 
 	//======constant====
 

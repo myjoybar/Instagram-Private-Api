@@ -13,41 +13,37 @@ import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
 import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
 import com.joy.insapi.manager.IGCommonFieldsManager;
 import com.joy.insapi.manager.IGConfig;
-import com.joy.insapi.manager.utils.IGUtils;
-import com.joy.insapi.request.InsBaseResponseData;
-import com.joy.insapi.request.InsGsonResponseHandler;
+import com.joy.insapi.response.InsBaseResponseData;
+import com.joy.insapi.response.InsGsonResponseHandler;
 import com.joy.insapi.request.InsRequestCallBack;
-import com.joy.insapi.request.feed.FeedResponseData;
-import com.joy.insapi.request.feed.GetFeedRequest;
-import com.joy.insapi.request.follower.FollowersResponseData;
-import com.joy.insapi.request.follower.GetFollowersRequest;
-import com.joy.insapi.request.following.FollowingResponseData;
-import com.joy.insapi.request.following.GetFollowingRequest;
-import com.joy.insapi.request.followingcancel.FollowingCancelPayload;
-import com.joy.insapi.request.followingcancel.FollowingCancelRequest;
-import com.joy.insapi.request.followingcancel.FollowingCancelResponseData;
-import com.joy.insapi.request.followingcreate.FollowingCreatePayload;
-import com.joy.insapi.request.followingcreate.FollowingCreateRequest;
-import com.joy.insapi.request.followingcreate.FollowingCreateResponseData;
-import com.joy.insapi.request.header.GetHeaderRequest;
-import com.joy.insapi.request.login.LoginPayload;
-import com.joy.insapi.request.login.LoginRequest;
-import com.joy.insapi.request.login.LoginResponseData;
-import com.joy.insapi.request.mediacomments.GetMediaCommentsRequest;
-import com.joy.insapi.request.mediacomments.MediaCommentResponseData;
-import com.joy.insapi.request.medialike.MediaLikePayload;
-import com.joy.insapi.request.medialike.MedialLikeRequest;
-import com.joy.insapi.request.medialikers.GetMediaLikersRequest;
-import com.joy.insapi.request.medialikers.MediaLikersResponseData;
-import com.joy.insapi.request.mediaunlike.MediaUnLikePayload;
-import com.joy.insapi.request.mediaunlike.MedialUnLikeRequest;
-import com.joy.insapi.request.userinfo.UserInfoRequest;
+import com.joy.insapi.request.api.feed.FeedResponseData;
+import com.joy.insapi.request.api.feed.GetAllFeedManager;
+import com.joy.insapi.request.api.feed.GetFeedRequest;
+import com.joy.insapi.request.api.feed.GetLikedFeedRequest;
+import com.joy.insapi.request.api.follower.FollowersResponseData;
+import com.joy.insapi.request.api.follower.GetFollowersRequest;
+import com.joy.insapi.request.api.following.FollowingResponseData;
+import com.joy.insapi.request.api.following.GetFollowingRequest;
+import com.joy.insapi.request.api.followingcancel.FollowingCancelRequest;
+import com.joy.insapi.request.api.followingcancel.FollowingCancelResponseData;
+import com.joy.insapi.request.api.followingcreate.FollowingCreateRequest;
+import com.joy.insapi.request.api.followingcreate.FollowingCreateResponseData;
+import com.joy.insapi.request.api.header.GetHeaderRequest;
+import com.joy.insapi.request.api.login.LoginRequest;
+import com.joy.insapi.request.api.login.LoginResponseData;
+import com.joy.insapi.request.api.mediacomments.GetMediaCommentsRequest;
+import com.joy.insapi.request.api.mediacomments.MediaCommentResponseData;
+import com.joy.insapi.request.api.medialike.MedialLikeRequest;
+import com.joy.insapi.request.api.medialikers.GetMediaLikersRequest;
+import com.joy.insapi.request.api.medialikers.MediaLikersResponseData;
+import com.joy.insapi.request.api.mediaunlike.MedialUnLikeRequest;
+import com.joy.insapi.request.api.userinfo.UserInfoResponseData;
+import com.joy.insapi.request.api.userinfo.UserInfoWithIDRequest;
+import com.joy.insapi.request.api.userinfo.UserInfoWithNameRequest;
 import com.joy.libok.OkHttpManager;
-import com.joy.libok.OkHttpManager2;
 import com.joy.libok.configdata.OKConfigData;
 import com.joy.libok.test.log.LLog;
 
-import java.util.HashMap;
 import java.util.List;
 
 import okhttp3.Headers;
@@ -99,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 		ClearableCookieJar cookieJar = new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(mContext));
 		okConfigData.setCookiesJar(cookieJar);
 		OkHttpManager.getInstance().init(okConfigData);
-		OkHttpManager2.getInstance().init(okConfigData);
+		//OkHttpManager2.getInstance().init(okConfigData);
 
 	}
 
@@ -115,15 +111,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 			case R.id.btn_login:
 				//login("joy.dingtone", "123456inst"); //10171477409
 				//login("baily.teesy", "bj12345678");
-				//login("wwwaitinglwt", "669845lwt");  //pkId = 322961280
+				login("wwwaitinglwt", "669845lwt");  //pkId = 322961280
 				//login("pidan_baby", "destiny411"); // pkId = 6500982440
-				login("pidan_baby", "destiny411"); // pkId = 6500982440
+				//login("pidan_baby", "destiny411"); // pkId = 6500982440
 				break;
 			case R.id.btn_getfeed:
 				getFeed(true, "");
+				//getAllFeed();
 				break;
 			case R.id.btn_getfeedlike:
-				getFeedLiked(true);
+				getFeedLiked(true,"");
 				break;
 
 			case R.id.btn_followers:
@@ -146,7 +143,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 				break;
 
 			case R.id.btn_getUserInfo:
-				getUserInfo("6500982440");
+				//getUserInfo("322961280");
+				//getUserInfo2("shutongjia0425265");
+				getUserInfo2("shutongjia04252653333");
 				break;
 
 			case R.id.btn_following_create:
@@ -247,19 +246,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 	private void login(String userName, String pwd) {
 
-		String csrftoken = IGCommonFieldsManager.getInstance().getCsrftoken();
-		Log.d(TAG, "csrftoken = " + csrftoken);
-		LoginPayload loginPayload = new LoginPayload();
-		loginPayload.set_csrftoken(csrftoken);
-		loginPayload.setUsername(userName);
-		loginPayload.setPassword(pwd);
-		loginPayload.setGuid(IGUtils.generateUuid(true));
-		loginPayload.setDevice_id(IGUtils.generateDeviceId(userName, pwd));
-		loginPayload.setPhone_id(IGUtils.generateUuid(true));
-		loginPayload.setLogin_attempt_account(0);
-
-		LoginRequest loginRequest = new LoginRequest(loginPayload);
-
+		LoginRequest loginRequest = new LoginRequest(userName,pwd);
 		loginRequest.execute(new InsRequestCallBack<LoginResponseData>() {
 			@Override
 			public void onSuccess(int statusCode, LoginResponseData insBaseData) {
@@ -284,6 +271,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 	}
 
 
+	private void getAllFeed() {
+		String userId = IGCommonFieldsManager.getInstance().getPKID();
+		GetAllFeedManager.getInstance().getAllFeed(userId,new GetAllFeedManager.GetAllFeedCallBack() {
+			@Override
+			public void onSuccess(FeedResponseData feedResponseData) {
+				Log.d(TAG, String.format("getFeed request end and the size = %s ", feedResponseData.getItems().size()));
+			}
+
+			@Override
+			public void onFailure(int errorCode, String errorMsg) {
+				Log.d(TAG, "getFeed onFailure = " + errorMsg);
+			}
+		});
+
+
+	}
+
+
 	private void getFeed(boolean isFirstPage, String nextMaxId) {
 
 		if (isFirstPage) {
@@ -301,11 +306,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 				mFeedResponseDataAll.setMore_available(response.isMore_available());
 				mFeedResponseDataAll.getItems().addAll(response.getItems());
 
+				for (int i = 0; i <response.getItems().size() ; i++) {
+					Log.d(TAG, String.format("--------www------- %s", response.getItems().get(i).getMedia_type()));
+
+					if (response.getItems().get(i).getMedia_type()==2){
+						Log.d(TAG, String.format("--------------- %s", response.getItems().get(i).getView_count()));
+					}
+				}
+
 				if (response.isMore_available()) {
 					getFeed(false, mFeedResponseDataAll.getNext_max_id());
 				} else {
 					Log.d(TAG, String.format("getFeed request end and the size = %s ", mFeedResponseDataAll.getItems().size()));
 				}
+
+
 			}
 
 			@Override
@@ -323,31 +338,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 	 *
 	 * @param isFirstPage
 	 */
-	private void getFeedLiked(boolean isFirstPage) {
-
-		String url = IGConfig.API_V1 + IGConfig.ACTION_GET_FEED_LIKED;
-
-		String userId = IGCommonFieldsManager.getInstance().getPKID();
-
-
-		HashMap<String, String> paramsMap = new HashMap<>();
-		paramsMap.put("uid", userId);
+	private void getFeedLiked(boolean isFirstPage, String nextMaxId) {
 
 
 		if (isFirstPage) {
 			mFeedResponseDataLiked.getItems().clear();
-		} else {
-			paramsMap.put("max_id", mFeedResponseDataLiked.getNext_max_id());
 		}
-
-
-		OkHttpManager.getInstance().get(url).addParams(paramsMap).addHeaders(IGConfig.getHeadersPHp3()).execute(new InsGsonResponseHandler<FeedResponseData>() {
-			@Override
-			public void onFailure(int errorCode, String errorMsg) {
-				Log.d(TAG, "getFeedLiked onFailure = " + errorMsg);
-
-			}
-
+		GetLikedFeedRequest getFeedLikedRequest = new GetLikedFeedRequest(isFirstPage,nextMaxId);
+		getFeedLikedRequest.execute(new InsRequestCallBack<FeedResponseData>() {
 			@Override
 			public void onSuccess(int statusCode, FeedResponseData response) {
 				Log.d(TAG, "getFeedLiked onSuccess ");
@@ -359,13 +357,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 				mFeedResponseDataLiked.getItems().addAll(response.getItems());
 
 				if (response.isMore_available()) {
-					getFeedLiked(false);
+					getFeedLiked(false,mFeedResponseDataLiked.getNext_max_id());
 				} else {
 					Log.d(TAG, String.format("getFeedLiked request end and the size = %s ", mFeedResponseDataLiked.getItems().size()));
 				}
 
 			}
+
+			@Override
+			public void onFailure(int errorCode, String errorMsg) {
+				Log.d(TAG, "getFeedLiked onFailure = " + errorMsg);
+			}
 		});
+
+
 
 
 	}
@@ -376,8 +381,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 		if (isFirstPage) {
 			mFollowersResponseData.getUsers().clear();
 		}
-		final String userId = IGCommonFieldsManager.getInstance().getPKID();
-		GetFollowersRequest getFollowersRequest = new GetFollowersRequest(isFirstPage, userId, nextMaxId);
+		 String userId = IGCommonFieldsManager.getInstance().getPKID();
+
+		String userId1 = " 7761457415";
+		GetFollowersRequest getFollowersRequest = new GetFollowersRequest(isFirstPage, userId1, nextMaxId);
 		getFollowersRequest.execute(new InsRequestCallBack<FollowersResponseData>() {
 			@Override
 			public void onSuccess(int statusCode, FollowersResponseData response) {
@@ -445,6 +452,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 		List<FeedResponseData.ItemsBean> itemsBeanList = mFeedResponseDataAll.getItems();
 		int size = itemsBeanList.size();
 		getLikersCount = 0;
+		getLikersCount_amount =0;
 		for (int i = 0; i < size; i++) {
 			Log.d(TAG, "ItemsBean---------- " + i);
 			FeedResponseData.ItemsBean itemsBean = itemsBeanList.get(i);
@@ -454,6 +462,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 	}
 
 	private int getLikersCount = 0;
+	private int getLikersCount_amount = 0;
 
 	private void getMediaLikers222(final FeedResponseData.ItemsBean itemsBean) {
 
@@ -464,7 +473,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 				itemsBean.getLikers().clear();
 				itemsBean.getLikers().addAll(response.getUsers());
 				getLikersCount++;
-				Log.d(TAG, "getMediaLikers onSuccess, " + getLikersCount);
+				getLikersCount_amount = getLikersCount_amount+response.getUser_count();
+
+
+				Log.d(TAG,
+						"getMediaLikers onSuccess,  getLikersCount=" + getLikersCount+",response.getUsers() ="+response.getUsers().size()+", " +
+								"getLikersCount_amount ="+getLikersCount_amount);
 			}
 
 			@Override
@@ -481,6 +495,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 		List<FeedResponseData.ItemsBean> itemsBeanList = mFeedResponseDataAll.getItems();
 		int size = itemsBeanList.size();
 		MediaComments = 0;
+		MediaComments_amout = 0;
 		for (int i = 0; i < size; i++) {
 			Log.d(TAG, "ItemsBean---------- " + i);
 			FeedResponseData.ItemsBean itemsBean = itemsBeanList.get(i);
@@ -490,6 +505,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 	}
 
 	private int MediaComments = 0;
+	private int MediaComments_amout = 0;
 
 
 	private void getMediaComments222(final FeedResponseData.ItemsBean itemsBean) {
@@ -502,7 +518,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 				itemsBean.getComments().clear();
 				itemsBean.getComments().addAll(response.getComments());
 				MediaComments++;
-				Log.d(TAG, "getMediaLikers onSuccess, " + MediaComments);
+				MediaComments_amout = MediaComments_amout+response.getComment_count();
+				Log.d(TAG, "getMediaComments onSuccess, " + MediaComments+",MediaComments_amout="+MediaComments_amout);
 			}
 
 			@Override
@@ -515,11 +532,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
 	private void getUserInfo(String userId) {
-		UserInfoRequest userInfoRequest = new UserInfoRequest(userId);
-		userInfoRequest.execute(new InsRequestCallBack<InsBaseResponseData>() {
+		UserInfoWithIDRequest userInfoRequest = new UserInfoWithIDRequest(userId);
+		userInfoRequest.execute(new InsRequestCallBack<UserInfoResponseData>() {
 			@Override
-			public void onSuccess(int statusCode, InsBaseResponseData insBaseData) {
-				Log.d(TAG, "getUserInfo onSuccess ");
+			public void onSuccess(int statusCode, UserInfoResponseData insBaseData) {
+				Log.d(TAG, "getUserInfo onSuccess "+insBaseData.getUser().getUsername());
 			}
 
 			@Override
@@ -529,21 +546,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 		});
 	}
 
+	private void getUserInfo2(String userId) {
+		UserInfoWithNameRequest userInfoRequest = new UserInfoWithNameRequest(userId);
+		userInfoRequest.execute(new InsRequestCallBack<UserInfoResponseData>() {
+			@Override
+			public void onSuccess(int statusCode, UserInfoResponseData insBaseData) {
+				Log.d(TAG, "getUserInfo onSuccess "+insBaseData.getUser().getUsername());
+			}
+
+			@Override
+			public void onFailure(int errorCode, String errorMsg) {
+				Log.d(TAG, "getUserInfo onFailure = " + errorMsg);
+				//getUserInfo onFailure = {"message": "User not found", "status": "fail"}
+			}
+		});
+	}
+
+
+
+
+
 
 	private void following_create(String userId) {
-		String csrftoken = IGCommonFieldsManager.getInstance().getCsrftoken();
-		String pkid = IGCommonFieldsManager.getInstance().getPKID();
-
-		FollowingCreatePayload followingCreatePayload = new FollowingCreatePayload();
-
-		followingCreatePayload.set_csrftoken(csrftoken);
-		followingCreatePayload.set_uid(pkid);
-		followingCreatePayload.set_uuid(IGUtils.generateUuid(true));
-		followingCreatePayload.setUser_id(userId);
-		followingCreatePayload.setRadio_type("wifi-none");
 
 
-		FollowingCreateRequest followingCreateRequest = new FollowingCreateRequest(userId, followingCreatePayload);
+		FollowingCreateRequest followingCreateRequest = new FollowingCreateRequest(userId);
 		followingCreateRequest.execute(new InsRequestCallBack<FollowingCreateResponseData>() {
 			@Override
 			public void onSuccess(int statusCode, FollowingCreateResponseData insBaseData) {
@@ -566,19 +593,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 	private void following_cancel(String userId) {
 
-		String csrftoken = IGCommonFieldsManager.getInstance().getCsrftoken();
-		String pkid = IGCommonFieldsManager.getInstance().getPKID();
-
-		FollowingCancelPayload followingCreatePayload = new FollowingCancelPayload();
-
-		followingCreatePayload.set_csrftoken(csrftoken);
-		followingCreatePayload.set_uid(pkid);
-		followingCreatePayload.set_uuid(IGUtils.generateUuid(true));
-		followingCreatePayload.setUser_id(userId);
-		followingCreatePayload.setRadio_type("wifi-none");
-
-
-		FollowingCancelRequest followingCreateRequest = new FollowingCancelRequest(userId, followingCreatePayload);
+		FollowingCancelRequest followingCreateRequest = new FollowingCancelRequest(userId);
 		followingCreateRequest.execute(new InsRequestCallBack<FollowingCancelResponseData>() {
 			@Override
 			public void onSuccess(int statusCode, FollowingCancelResponseData insBaseData) {
@@ -599,19 +614,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 	private void mediaLike(String mediaID) {
 
-		String csrftoken = IGCommonFieldsManager.getInstance().getCsrftoken();
-		String pkid = IGCommonFieldsManager.getInstance().getPKID();
-
-		MediaLikePayload mediaLikePayload = new MediaLikePayload();
-
-		mediaLikePayload.set_csrftoken(csrftoken);
-		mediaLikePayload.set_uid(pkid);
-		mediaLikePayload.set_uuid(IGUtils.generateUuid(true));
-		mediaLikePayload.setRadio_type("wifi-none");
-		mediaLikePayload.setMedia_id(mediaID);
 
 
-		MedialLikeRequest medialLikeRequest = new MedialLikeRequest(mediaID, mediaLikePayload);
+
+		MedialLikeRequest medialLikeRequest = new MedialLikeRequest(mediaID);
 		medialLikeRequest.execute(new InsRequestCallBack<InsBaseResponseData>() {
 			@Override
 			public void onSuccess(int statusCode, InsBaseResponseData insBaseData) {
@@ -627,19 +633,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 	private void mediaUnLike(String mediaID) {
 
-		String csrftoken = IGCommonFieldsManager.getInstance().getCsrftoken();
-		String pkid = IGCommonFieldsManager.getInstance().getPKID();
 
-		MediaUnLikePayload mediaUnLikePayload = new MediaUnLikePayload();
-
-		mediaUnLikePayload.set_csrftoken(csrftoken);
-		mediaUnLikePayload.set_uid(pkid);
-		mediaUnLikePayload.set_uuid(IGUtils.generateUuid(true));
-		mediaUnLikePayload.setRadio_type("wifi-none");
-		mediaUnLikePayload.setMedia_id(mediaID);
-
-
-		MedialUnLikeRequest medialUnLikeRequest = new MedialUnLikeRequest(mediaID, mediaUnLikePayload);
+		MedialUnLikeRequest medialUnLikeRequest = new MedialUnLikeRequest(mediaID);
 		medialUnLikeRequest.execute(new InsRequestCallBack<InsBaseResponseData>() {
 			@Override
 			public void onSuccess(int statusCode, InsBaseResponseData insBaseData) {

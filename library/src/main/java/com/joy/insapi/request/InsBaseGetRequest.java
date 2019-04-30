@@ -21,6 +21,7 @@ public abstract class InsBaseGetRequest<R extends InsBaseResponseData> extends I
 				.get(getRequestUrl())
 				.addHeaders(IGConfig.getHeadersPHp3())
 				.addParams(getMapParams())
+				.tag(getTag())
 				.execute(new InsGsonResponseHandler<R>(getType()) {
 
 					@Override

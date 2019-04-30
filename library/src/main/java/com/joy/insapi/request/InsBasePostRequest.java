@@ -28,6 +28,7 @@ public abstract class InsBasePostRequest <T ,R extends InsBaseResponseData> exte
 				.post(getRequestUrl())
 				.addBodyContent(payload)
 				.addHeaders(IGConfig.getHeadersPHp3())
+				.tag(getTag())
 				.execute(new InsGsonResponseHandler<R>(getType()) {
 					@Override
 					public void onSuccess(int statusCode, R insBaseData) {

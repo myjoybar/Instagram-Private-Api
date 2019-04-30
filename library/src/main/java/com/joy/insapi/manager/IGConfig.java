@@ -11,6 +11,7 @@ public class IGConfig {
 
 	public static final String ACTION_GET_HEADER = "si/fetch_headers/?challenge_type=signup&guid=%s"; //获取token
 	public static final String ACTION_LOGIN = "accounts/login/"; //登录
+	public static final String ACTION_LOGIN_TWO_FACTOR = "accounts/two_factor_login/"; //登录
 	public static final String ACTION_GET_FEED = "feed/user/%s/";//获取post
 	public static final String ACTION_GET_FEED_LIKED = "feed/liked/";//获取喜欢的post
 	public static final String ACTION_GET_FOLLOWERS = "friendships/%s/followers/";//获取followers

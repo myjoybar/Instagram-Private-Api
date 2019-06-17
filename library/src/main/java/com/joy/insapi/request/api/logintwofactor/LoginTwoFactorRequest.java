@@ -4,8 +4,9 @@ package com.joy.insapi.request.api.logintwofactor;
 import com.joy.insapi.manager.IGConfig;
 import com.joy.insapi.manager.utils.IGUtils;
 import com.joy.insapi.request.InsBasePostRequest;
+import com.joy.insapi.request.api.login.LoginResponseData;
 
-public class LoginTwoFactorRequest extends InsBasePostRequest<LoginTwoFactorPayload, LoginTwoFactorResponseData> {
+public class LoginTwoFactorRequest extends InsBasePostRequest<LoginTwoFactorPayload, LoginResponseData> {
 
 	String userName;
 	String pwd;

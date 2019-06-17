@@ -7,7 +7,7 @@ group = "com.joybar.insapi"
 def packageName = 'insapi'
 def artifactIdName = 'insapi'
 def projectDescription = 'android instagram private api'
-version = "1.2.3"
+version = "1.2.4"
 
 install {
     repositories.mavenInstaller {

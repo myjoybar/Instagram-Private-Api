@@ -16,31 +16,32 @@ import okhttp3.HttpUrl;
 
 public class GetHeaderRequest extends InsBaseGetRequest<InsBaseResponseData> {
 
-	public static final String CSRFTOKEN = "csrftoken";
+  public static final String CSRFTOKEN = "csrftoken";
 
-	@Override
-	protected String getActionUrl() {
-		return String.format(IGConfig.ACTION_GET_HEADER, IGUtils.generateUuid(false));
-	}
+  @Override
+  protected String getActionUrl() {
+    return String.format(IGConfig.ACTION_GET_HEADER, IGUtils.generateUuid(false));
+  }
 
 
-	public String getCsrfCookie() {
-		HttpUrl url = HttpUrl.parse(getRequestUrl());
-		for (Cookie cookie : OkHttpManager.getInstance().getOkHttpClient().cookieJar().loadForRequest(url)) {
-			Log.d("GETCOOKIE", "Name: " + cookie.name());
-			if (cookie.name().equalsIgnoreCase(CSRFTOKEN)) {
-				String value = cookie.value();
-				Log.d(TAG, String.format(CSRFTOKEN + "=%s", value));
-				IGCommonFieldsManager.getInstance().saveCsrftoken(value);
-				return value;
-			}
-		}
-		return "";
+  public String getCsrfCookie() {
+    HttpUrl url = HttpUrl.parse(getRequestUrl());
+    for (Cookie cookie : OkHttpManager.getInstance().getOkHttpClient().cookieJar()
+        .loadForRequest(url)) {
+      Log.d("GETCOOKIE", "Name: " + cookie.name());
+      if (cookie.name().equalsIgnoreCase(CSRFTOKEN)) {
+        String value = cookie.value();
+        Log.d(TAG, String.format(CSRFTOKEN + "=%s", value));
+        IGCommonFieldsManager.getInstance().saveCsrftoken(value);
+        return value;
+      }
+    }
+    return "";
 
-	}
+  }
 
-	@Override
-	protected Map<String, String> getMapParams() {
-		return null;
-	}
+  @Override
+  protected Map<String, String> getMapParams() {
+    return null;
+  }
 }

@@ -9,27 +9,27 @@ import java.util.Map;
 
 public class GetLikedFeedRequest extends InsBaseGetRequest<FeedResponseData> {
 
-	private boolean isFirstPage;
-	private String nextMaxId;
+  private boolean isFirstPage;
+  private String nextMaxId;
 
-	public GetLikedFeedRequest(boolean isFirstPage, String nextMaxId) {
-		this.isFirstPage = isFirstPage;
-		this.nextMaxId = nextMaxId;
-	}
+  public GetLikedFeedRequest(boolean isFirstPage, String nextMaxId) {
+    this.isFirstPage = isFirstPage;
+    this.nextMaxId = nextMaxId;
+  }
 
-	@Override
-	protected String getActionUrl() {
-		return IGConfig.ACTION_GET_FEED_LIKED;
-	}
+  @Override
+  protected String getActionUrl() {
+    return IGConfig.ACTION_GET_FEED_LIKED;
+  }
 
-	@Override
-	protected Map<String, String> getMapParams() {
-		HashMap<String, String> paramsMap = new HashMap<>();
-		String userId = IGCommonFieldsManager.getInstance().getPKID();
-		paramsMap.put("uid", userId);
-		if (!isFirstPage) {
-			paramsMap.put("max_id", nextMaxId);
-		}
-		return paramsMap;
-	}
+  @Override
+  protected Map<String, String> getMapParams() {
+    HashMap<String, String> paramsMap = new HashMap<>();
+    String userId = IGCommonFieldsManager.getInstance().getPKID();
+    paramsMap.put("uid", userId);
+    if (!isFirstPage) {
+      paramsMap.put("max_id", nextMaxId);
+    }
+    return paramsMap;
+  }
 }

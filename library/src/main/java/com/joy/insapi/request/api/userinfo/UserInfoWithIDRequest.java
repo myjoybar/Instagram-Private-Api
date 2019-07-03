@@ -8,19 +8,19 @@ import java.util.Map;
 
 public class UserInfoWithIDRequest extends InsBaseGetRequest<UserInfoResponseData> {
 
-	private String userId;
+  private String userId;
 
-	public UserInfoWithIDRequest(String userId) {
-		this.userId = userId;
-	}
+  public UserInfoWithIDRequest(String userId) {
+    this.userId = userId;
+  }
 
-	@Override
-	protected Map<String, String> getMapParams() {
-		return null;
-	}
+  @Override
+  protected Map<String, String> getMapParams() {
+    return null;
+  }
 
-	@Override
-	protected String getActionUrl() {
-		 return String.format(IGConfig.ACTION_GET_USER_INFO_WITH_ID, userId);
-	}
+  @Override
+  protected String getActionUrl() {
+    return String.format(IGConfig.ACTION_GET_USER_INFO_WITH_ID, userId);
+  }
 }

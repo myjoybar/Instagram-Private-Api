@@ -6,22 +6,22 @@ import com.joy.insapi.request.InsBaseGetRequest;
 
 import java.util.Map;
 
-public class GetMediaCommentsRequest  extends InsBaseGetRequest<MediaCommentResponseData> {
+public class GetMediaCommentsRequest extends InsBaseGetRequest<MediaCommentResponseData> {
 
-	private String itemID;
+  private String itemID;
 
-	public GetMediaCommentsRequest(String itemID) {
-		this.itemID = itemID;
-	}
+  public GetMediaCommentsRequest(String itemID) {
+    this.itemID = itemID;
+  }
 
 
-	@Override
-	protected Map<String, String> getMapParams() {
-		return null;
-	}
+  @Override
+  protected Map<String, String> getMapParams() {
+    return null;
+  }
 
-	@Override
-	protected String getActionUrl() {
-		return String.format(IGConfig.ACTION_GET_MEDIA_COMMENTS, itemID);
-	}
+  @Override
+  protected String getActionUrl() {
+    return String.format(IGConfig.ACTION_GET_MEDIA_COMMENTS, itemID);
+  }
 }

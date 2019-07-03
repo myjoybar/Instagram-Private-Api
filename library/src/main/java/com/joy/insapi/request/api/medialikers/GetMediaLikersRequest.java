@@ -8,19 +8,19 @@ import java.util.Map;
 
 public class GetMediaLikersRequest extends InsBaseGetRequest<MediaLikersResponseData> {
 
-	private String itemID;
+  private String itemID;
 
-	public GetMediaLikersRequest(String itemID) {
-		this.itemID = itemID;
-	}
+  public GetMediaLikersRequest(String itemID) {
+    this.itemID = itemID;
+  }
 
-	@Override
-	protected Map<String, String> getMapParams() {
-		return null;
-	}
+  @Override
+  protected Map<String, String> getMapParams() {
+    return null;
+  }
 
-	@Override
-	protected String getActionUrl() {
-		return String.format(IGConfig.ACTION_GET_MEDIA_LIKERS, itemID);
-	}
+  @Override
+  protected String getActionUrl() {
+    return String.format(IGConfig.ACTION_GET_MEDIA_LIKERS, itemID);
+  }
 }

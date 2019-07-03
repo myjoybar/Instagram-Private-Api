@@ -1,5 +1,7 @@
 package com.joy.insapi.manager.utils;
 
+import android.content.Context;
+import android.provider.Settings;
 import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -22,6 +24,11 @@ public class IGUtils {
 		String volatileSeed = "12345";
 		return "android-" + md5hex(seed + volatileSeed).substring(0, 16);
 	}
+
+	public static String getAndroidId(Context context) {
+		return Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+	}
+
 
 	public static String md5hex(String source) {
 		return digest("MD5", source);

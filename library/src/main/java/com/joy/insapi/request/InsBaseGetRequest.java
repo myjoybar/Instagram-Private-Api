@@ -11,6 +11,7 @@ import com.joy.libok.OkHttpManager;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Map;
+import okhttp3.Headers;
 
 public abstract class InsBaseGetRequest<R extends InsBaseResponseData> extends InsBaseRequest<R> {
 	protected static final String TAG = "InsBaseGetRequest";
@@ -19,7 +20,7 @@ public abstract class InsBaseGetRequest<R extends InsBaseResponseData> extends I
 	void execute() {
 		OkHttpManager.getInstance()
 				.get(getRequestUrl())
-				.addHeaders(IGConfig.getHeadersPHp3())
+				.addHeaders(IGConfig.getHeaders())
 				.addParams(getMapParams())
 				.tag(getTag())
 				.execute(new InsGsonResponseHandler<R>(getType()) {
@@ -34,9 +35,10 @@ public abstract class InsBaseGetRequest<R extends InsBaseResponseData> extends I
 						}
 					}
 
+
+
 					@Override
 					public void onSuccess(int statusCode, R insBaseData) {
-						Log.d(TAG, String.format("request %s success, statusCode = %s", getActionUrl(), statusCode));
 						if (null != mInsRequestCallBack) {
 							mInsRequestCallBack.onSuccess(statusCode, insBaseData);
 						}
@@ -49,12 +51,12 @@ public abstract class InsBaseGetRequest<R extends InsBaseResponseData> extends I
 
 	protected Type getType() {
 		Class<?> classZ = getClass();
-		Type type = classZ.getGenericSuperclass();    //反射获取带泛型的class
+		Type type = classZ.getGenericSuperclass();
 		if (type instanceof Class) {
-			throw new RuntimeException("Missing type parameter.");
+			throw new RuntimeException("miss the type parameter");
 		}
-		ParameterizedType parameter = (ParameterizedType) type;      //获取所有泛型
-		return $Gson$Types.canonicalize(parameter.getActualTypeArguments()[0]);  //将泛型转为type
+		ParameterizedType parameter = (ParameterizedType) type;
+		return $Gson$Types.canonicalize(parameter.getActualTypeArguments()[0]);
 	}
 
 

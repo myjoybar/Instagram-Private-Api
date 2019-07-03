@@ -13,52 +13,54 @@ import com.joy.libok.OkHttpManager;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
-public abstract class InsBasePostRequest <T ,R extends InsBaseResponseData> extends InsBaseRequest<R> {
-	private static final String TAG = "InsBasePostRequest";
+public abstract class InsBasePostRequest<T, R extends InsBaseResponseData> extends
+    InsBaseRequest<R> {
+
+  private static final String TAG = "InsBasePostRequest";
 
 
-	protected abstract T getRequestData();
+  protected abstract T getRequestData();
 
 
-	@Override
-	void execute() {
+  @Override
+  void execute() {
 
-		String payload = IgSignatureUtils.buildBodySignContent(IGGsonUtil.parseBeanToStr(getRequestData()));
-		OkHttpManager.getInstance()
-				.post(getRequestUrl())
-				.addBodyContent(payload)
-				.addHeaders(IGConfig.getHeadersPHp3())
-				.tag(getTag())
-				.execute(new InsGsonResponseHandler<R>(getType()) {
-					@Override
-					public void onSuccess(int statusCode, R insBaseData) {
-						Log.d(TAG, String.format("request %s success, statusCode = %s", getActionUrl(), statusCode));
-						if (null != mInsRequestCallBack) {
-							mInsRequestCallBack.onSuccess(statusCode, insBaseData);
-						}
-					}
+    String payload = IgSignatureUtils
+        .buildBodySignContent(IGGsonUtil.parseBeanToStr(getRequestData()));
+    OkHttpManager.getInstance()
+        .postBodyContent(getRequestUrl())
+        .addBodyContent(payload)
+        .addHeaders(IGConfig.getHeaders())
+        .tag(getTag())
+        .execute(new InsGsonResponseHandler<R>(getType()) {
+          @Override
+          public void onSuccess(int statusCode, R insBaseData) {
+            Log.d(TAG,
+                String.format("request %s success, statusCode = %s", getActionUrl(), statusCode));
+            if (null != mInsRequestCallBack) {
+              mInsRequestCallBack.onSuccess(statusCode, insBaseData);
+            }
+          }
 
-					@Override
-					public void onFailure(int errorCode, String errorMsg) {
-						super.onFailure(errorCode, errorMsg);
-						Log.d(TAG, String.format("request %s success ,errorCode= %s , errorMsg = %s", getActionUrl(), errorCode,
-								errorMsg));
-						if (null != mInsRequestCallBack) {
-							mInsRequestCallBack.onFailure(errorCode, errorMsg);
-						}
-					}
-				});
-	}
+          @Override
+          public void onFailure(int errorCode, String errorMsg) {
+            super.onFailure(errorCode, errorMsg);
+            if (null != mInsRequestCallBack) {
+              mInsRequestCallBack.onFailure(errorCode, errorMsg);
+            }
+          }
+        });
+  }
 
-	protected Type getType(){
-		Class<?> classZ = getClass();
-		Type type = classZ.getGenericSuperclass();    //反射获取带泛型的class
-		if (type instanceof Class) {
-			throw new RuntimeException("Missing type parameter.");
-		}
-		ParameterizedType parameter = (ParameterizedType) type;      //获取所有泛型
-		return $Gson$Types.canonicalize(parameter.getActualTypeArguments()[1]);  //将泛型转为type,这里共有两个泛型
-	}
+  protected Type getType() {
+    Class<?> classZ = getClass();
+    Type type = classZ.getGenericSuperclass();
+    if (type instanceof Class) {
+      throw new RuntimeException("miss the type parameter");
+    }
+    ParameterizedType parameter = (ParameterizedType) type;
+    return $Gson$Types.canonicalize(parameter.getActualTypeArguments()[1]);
+  }
 
 
 }

@@ -99,7 +99,7 @@ LoginRequest loginRequest = new LoginRequest(userName, pwd);
 
 
 
-#### 5. 其它使用方法详见demo注释
+#### 4. 其它使用方法详见demo注释
 
 ## License
 

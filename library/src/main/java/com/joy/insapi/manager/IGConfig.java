@@ -39,30 +39,16 @@ public class IGConfig {
   public static final String USER_AGENT_LOCALE = "en_US"; // "language_COUNTRY".
 
   static {
-    HEADER_MAP.put("Connection", "keep-alive");
-    HEADER_MAP.put("Content-Type", "application/json");
-    HEADER_MAP.put("X-IG-Connection-Type", "mobile(UMTS)");
-    HEADER_MAP.put("X-IG-Capabilities", "3ToAAA==");
-    HEADER_MAP.put("Accept-Language", "en-US");
-    HEADER_MAP.put("User-Agent", USER_AGENT);
-  }
-
-  static {
     RANDOM_DEVICES.add("24/7.0; 380dpi; 1080x1920; OnePlus; ONEPLUS A3010; OnePlus3T; qcom");
     RANDOM_DEVICES.add("23/6.0.1; 640dpi; 1440x2392; LGE/lge; RS988; h1; h1");
     RANDOM_DEVICES.add("24/7.0; 640dpi; 1440x2560; HUAWEI; LON-L29; HWLON; hi3660");
     RANDOM_DEVICES.add("23/6.0.1; 640dpi; 1440x2560; ZTE; ZTE A2017U; ailsa_ii; qcom");
-    RANDOM_DEVICES.add("23/6.0.1; 640dpi; 1440x2560; samsung; SM-G935F; hero2lte; samsungexynos8890");
-    RANDOM_DEVICES.add("23/6.0.1; 640dpi; 1440x2560; samsung; SM-G930F; herolte; samsungexynos8890");
+    RANDOM_DEVICES
+        .add("23/6.0.1; 640dpi; 1440x2560; samsung; SM-G935F; hero2lte; samsungexynos8890");
+    RANDOM_DEVICES
+        .add("23/6.0.1; 640dpi; 1440x2560; samsung; SM-G930F; herolte; samsungexynos8890");
 
   }
-
-
-  public static Map<String, String> getHeaders() {
-    return HEADER_MAP;
-
-  }
-
 
   static {
     int length = RANDOM_DEVICES.size();
@@ -74,6 +60,22 @@ public class IGConfig {
         .format(USER_AGENT_FORMAT, IG_VERSION, deviceInfos[0], deviceInfos[1], deviceInfos[2],
             deviceInfos[3], deviceInfos[4],
             deviceInfos[5], deviceInfos[6], deviceInfos[7], USER_AGENT_LOCALE, VERSION_CODE);
+  }
+
+  static {
+
+    HEADER_MAP.put("Connection", "keep-alive");
+    HEADER_MAP.put("Content-Type", "application/json");
+    HEADER_MAP.put("X-IG-Connection-Type", "mobile(UMTS)");
+    HEADER_MAP.put("X-IG-Capabilities", "3ToAAA==");
+    HEADER_MAP.put("Accept-Language", "en-US");
+    HEADER_MAP.put("User-Agent", USER_AGENT);
+  }
+
+
+  public static Map<String, String> getHeaders() {
+    return HEADER_MAP;
+
   }
 
 

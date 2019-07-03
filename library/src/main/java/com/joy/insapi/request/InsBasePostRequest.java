@@ -1,23 +1,23 @@
 package com.joy.insapi.request;
 
 import android.util.Log;
-
 import com.google.gson.internal.$Gson$Types;
 import com.joy.insapi.manager.IGConfig;
-import com.joy.insapi.manager.utils.sign.IgSignatureUtils;
 import com.joy.insapi.manager.utils.IGGsonUtil;
+import com.joy.insapi.manager.utils.sign.IgSignatureUtils;
 import com.joy.insapi.response.InsBaseResponseData;
 import com.joy.insapi.response.InsGsonResponseHandler;
 import com.joy.libok.OkHttpManager;
-
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import okhttp3.MediaType;
 
 public abstract class InsBasePostRequest<T, R extends InsBaseResponseData> extends
     InsBaseRequest<R> {
 
   private static final String TAG = "InsBasePostRequest";
-
+  private static final MediaType MEDIA_TYPE_FORM = MediaType
+      .parse("application/x-www-form-urlencoded; charset=utf-8");//mdiatype 这个需要和服务端保持一致
 
   protected abstract T getRequestData();
 
@@ -29,6 +29,7 @@ public abstract class InsBasePostRequest<T, R extends InsBaseResponseData> exten
         .buildBodySignContent(IGGsonUtil.parseBeanToStr(getRequestData()));
     OkHttpManager.getInstance()
         .postBodyContent(getRequestUrl())
+        .addMediaType(MEDIA_TYPE_FORM)
         .addBodyContent(payload)
         .addHeaders(IGConfig.getHeaders())
         .tag(getTag())

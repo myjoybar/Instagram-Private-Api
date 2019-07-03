@@ -105,9 +105,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         break;
 
       case R.id.btn_login:
-        //login("joy.dingtone", "123456inst"); //10171477409
+        login("joy.dingtone", "123456inst"); //10171477409
         //login("baily.teesy", "bj12345678");
-        login("wwwaitinglwt", "669845lwt");  //pkId = 322961280
+        // login("wwwaitinglwt", "669845lwt");  //pkId = 322961280
         //login("pidan_baby", "destiny411"); // pkId = 6500982440
         //login("pidan_baby", "destiny411"); // pkId = 6500982440
         break;
@@ -145,7 +145,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         break;
 
       case R.id.btn_following_cancel:
-        following_cancel("10171477409");
+        followingCancel("10171477409");
         break;
 
       case R.id.btn_media_like:
@@ -186,7 +186,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
   /**
-   * 登录
+   * Login
    * @param userName
    * @param pwd
    */
@@ -573,7 +573,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
    * 取关某人
    * @param userId
    */
-  private void following_cancel(String userId) {
+  private void followingCancel(String userId) {
 
     FollowingCancelRequest followingCreateRequest = new FollowingCancelRequest(userId);
     followingCreateRequest.execute(new InsRequestCallBack<FollowingCancelResponseData>() {

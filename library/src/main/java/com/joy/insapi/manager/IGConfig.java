@@ -1,28 +1,32 @@
 package com.joy.insapi.manager;
 
+import android.util.Log;
+import com.joy.insapi.manager.utils.Utils;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 public class IGConfig {
 
   private static final Map<String, String> HEADER_MAP = new HashMap<>();
   private static final List<String> RANDOM_DEVICES = new ArrayList<>();
   public static String USER_AGENT = "";
+
   public static final String API_V1 = "https://i.instagram.com/api/v1/";
   public static final String API_V2 = "https://i.instagram.com/api/v2/";
 
   public static final String ACTION_GET_HEADER = "si/fetch_headers/?challenge_type=signup&guid=%s"; //获取token
   public static final String ACTION_LOGIN = "accounts/login/"; //登录
+
+  public static final String ACTION_CURRENT_USER = "accounts/current_user/"; //获取当前账户
   public static final String ACTION_LOGIN_TWO_FACTOR = "accounts/two_factor_login/"; //登录
   public static final String ACTION_GET_FEED = "feed/user/%s/";//获取post
   public static final String ACTION_GET_FEED_LIKED = "feed/liked/";//获取喜欢的post
   public static final String ACTION_GET_FOLLOWERS = "friendships/%s/followers/";//获取followers
   public static final String ACTION_GET_FOLLOWING = "friendships/%s/following/";//获取following
-  public static final String ACTION_GET_FOLLOWING_CANCEL = "friendships/destroy/%s/";//关注某人
-  public static final String ACTION_GET_FOLLOWING_CREATE = "friendships/create/%s/";//取关某人
+  public static final String ACTION_GET_FOLLOWING_CANCEL = "friendships/destroy/%s/";//取关某人
+  public static final String ACTION_GET_FOLLOWING_CREATE = "friendships/create/%s/";//关注某人
   public static final String ACTION_GET_MEDIA_LIKERS = "media/%s/likers/";//获取某条post的followers
   public static final String ACTION_GET_MEDIA_COMMENTS = "media/%s/comments/";//获取某条post的comment
   public static final String ACTION_GET_MEDIA_LIKE = "media/%s/like/";//like某条post
@@ -38,6 +42,8 @@ public class IGConfig {
   public static final String VERSION_CODE = "138226743";
   public static final String USER_AGENT_LOCALE = "en_US"; // "language_COUNTRY".
 
+  //Instagram 76.0.0.15.395 Android (23/6.0.1; 640dpi; 1440x2560; ZTE; ZTE A2017U; ailsa_ii; qcom; en_US)
+
   static {
     RANDOM_DEVICES.add("24/7.0; 380dpi; 1080x1920; OnePlus; ONEPLUS A3010; OnePlus3T; qcom");
     RANDOM_DEVICES.add("23/6.0.1; 640dpi; 1440x2392; LGE/lge; RS988; h1; h1");
@@ -51,15 +57,22 @@ public class IGConfig {
   }
 
   static {
-    int length = RANDOM_DEVICES.size();
-    int index = new Random().nextInt(length);
-    String userAgentStr = RANDOM_DEVICES.get(index);
-    userAgentStr = userAgentStr.replace("/", ";");
-    String[] deviceInfos = userAgentStr.split(";");
+   // int length = RANDOM_DEVICES.size();
+   // int index = new Random().nextInt(length);
+    //String userAgentStr = RANDOM_DEVICES.get(index);
+
+
+   // userAgentStr = userAgentStr.replace("/", ";");
+   // String[] deviceInfos = userAgentStr.split(";");
+//    USER_AGENT = String
+//        .format(USER_AGENT_FORMAT, IG_VERSION, deviceInfos[0], deviceInfos[1], deviceInfos[2],
+//            deviceInfos[3], deviceInfos[4],
+//            deviceInfos[5], deviceInfos[6], deviceInfos[7], USER_AGENT_LOCALE, VERSION_CODE);
+
     USER_AGENT = String
-        .format(USER_AGENT_FORMAT, IG_VERSION, deviceInfos[0], deviceInfos[1], deviceInfos[2],
-            deviceInfos[3], deviceInfos[4],
-            deviceInfos[5], deviceInfos[6], deviceInfos[7], USER_AGENT_LOCALE, VERSION_CODE);
+        .format(USER_AGENT_FORMAT, IG_VERSION, Utils.getSDKInt(), Utils.getSystemVersion(), Utils.getDensity(IGCommonFieldsManager.getInstance().getContext())*180,Utils.getResolution(IGCommonFieldsManager.getInstance().getContext()),
+            Utils.getManufacturer(), Utils.getSystemModel(),
+            Utils.getDevice(), Utils.getCpuName(), USER_AGENT_LOCALE, VERSION_CODE);
   }
 
   static {
@@ -70,10 +83,12 @@ public class IGConfig {
     HEADER_MAP.put("X-IG-Capabilities", "3ToAAA==");
     HEADER_MAP.put("Accept-Language", "en-US");
     HEADER_MAP.put("User-Agent", USER_AGENT);
+    //  HEADER_MAP.put("User-Agent", "Mozilla/5.0 (Linux; Android 10; Pixel Build/QP1A.191005.007.A3; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/79.0.3945.116 Mobile Safari/537.36");
   }
 
 
   public static Map<String, String> getHeaders() {
+    Log.d("Activity"," HEADER_MAP  = "+HEADER_MAP.get("Cookie"));
     return HEADER_MAP;
 
   }

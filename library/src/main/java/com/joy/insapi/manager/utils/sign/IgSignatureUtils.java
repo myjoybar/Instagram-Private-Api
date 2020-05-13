@@ -1,5 +1,6 @@
 package com.joy.insapi.manager.utils.sign;
 
+import android.util.Log;
 import com.joy.insapi.manager.IGConfig;
 
 import java.io.UnsupportedEncodingException;
@@ -13,7 +14,9 @@ public class IgSignatureUtils {
   public static String buildBodySignContent(String bodyContent) {
     String parsedData = null;
     try {
+      Log.d("TAG","bodyContent = "+ bodyContent);
       parsedData = URLEncoder.encode(bodyContent, "UTF-8");
+
     } catch (UnsupportedEncodingException e) {
       e.printStackTrace();
     }

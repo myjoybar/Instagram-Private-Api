@@ -7,14 +7,32 @@
     tools:context="com.joybar.androidlibutils.MainActivity">
 
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
 
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.joybar.androidlibutils.MainActivity"
     android:orientation="vertical">
 
+    <EditText
+      android:id="@+id/et_sms_code"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:hint="输入验证码"/>
 
+
+    <Button
+      android:id="@+id/btn_confirm_sms_code"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="确认输入验证码"
+      />
+    <Button
+      android:id="@+id/btn_webview"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="webview "
+      />
     <Button
         android:id="@+id/btn_getcsftoken"
         android:layout_width="wrap_content"
@@ -29,7 +47,12 @@
         android:layout_height="wrap_content"
         android:text="login"
         />
-
+    <Button
+      android:id="@+id/btn_current"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="current user"
+      />
 
     <Button
         android:id="@+id/btn_getfeed"
@@ -90,7 +113,13 @@
 
         />
 
+    <Button
+      android:id="@+id/btn_following_create_users"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="following_create_users"
 
+      />
     <Button
         android:id="@+id/btn_following_cancel"
         android:layout_width="wrap_content"

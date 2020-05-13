@@ -6,12 +6,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.webkit.CookieManager;
+import android.widget.EditText;
 import com.franmontiel.persistentcookiejar.ClearableCookieJar;
-import com.franmontiel.persistentcookiejar.PersistentCookieJar;
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
 import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
 import com.joy.insapi.manager.IGCommonFieldsManager;
+import com.joy.insapi.manager.utils.IGGsonUtil;
+import com.joy.insapi.manager.utils.Utils;
 import com.joy.insapi.request.InsRequestCallBack;
+import com.joy.insapi.request.api.currentuser.CurrentUserInfoRequest;
+import com.joy.insapi.request.api.currentuser.CurrentUserInfoResponse;
 import com.joy.insapi.request.api.feed.FeedResponseData;
 import com.joy.insapi.request.api.feed.GetAllFeedManager;
 import com.joy.insapi.request.api.feed.GetFeedRequest;
@@ -34,23 +39,37 @@ import com.joy.insapi.request.api.medialikers.GetMediaLikersRequest;
 import com.joy.insapi.request.api.medialikers.MediaLikersResponseData;
 import com.joy.insapi.request.api.mediaunlike.MedialUnLikeRequest;
 import com.joy.insapi.request.api.userinfo.UserInfoResponseData;
+import com.joy.insapi.request.api.userinfo.UserInfoWebRequest;
 import com.joy.insapi.request.api.userinfo.UserInfoWithIDRequest;
 import com.joy.insapi.request.api.userinfo.UserInfoWithNameRequest;
 import com.joy.insapi.response.InsBaseResponseData;
+import com.joy.insapi.response.exception.ChallengeRequired;
+import com.joy.insapi.response.exception.InactiveUser;
+import com.joy.instagramapi.webview.CustomPersistentCookieJar;
+import com.joy.instagramapi.webview.InVisibleWebViewHelper;
+import com.joy.instagramapi.webview.WebViewUtils;
+import com.joy.instagramapi.webview.WebviewActivity;
 import com.joy.libok.OkHttpManager;
 import com.joy.libok.configdata.OKConfigData;
 import com.joy.libok.test.log.LLog;
+import java.util.Arrays;
 import java.util.List;
+import me.dt.libbase.mmkv.MMKVManager;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
   private static final String TAG = "MainActivity";
   private Context mContext;
+  private EditText etSmsCode;
+
   FeedResponseData mFeedResponseDataAll = new FeedResponseData();
   FeedResponseData mFeedResponseDataLiked = new FeedResponseData();
   FollowersResponseData mFollowersResponseData = new FollowersResponseData();
   FollowingResponseData mFollowingResponseData = new FollowingResponseData();
+
+  //public static String webviewUserAgent = "Mozilla/5.0 (Linux; Android 10; Pixel Build/QP1A.191005.007.A3; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/79.0.3945.116 Mobile Safari/537.36";
+  String webviewUserAgent = WebViewUtils.getUserAgent(mContext);
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +79,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     initOkManager();
     initInsFiledManger();
     initListener();
+    MMKVManager.getInstance().init(mContext);
 
+    Log.d(TAG, "getCodeName =  " + Utils.getCodeName());
+    Log.d(TAG, "getCpuAbi =  " + Utils.getCpuAbi());
+    Log.d(TAG, "getCpuAbi2 =  " + Utils.getCpuAbi2());
+    Log.d(TAG, "getFingerprint =  " + Utils.getFingerprint());
+    Log.d(TAG, "getManufacturer =  " + Utils.getManufacturer());
+    Log.d(TAG, "getProduct =  " + Utils.getProduct());
+    Log.d(TAG, "getBoard =  " + Utils.getBoard());
+    Log.d(TAG, "getDisplay =  " + Utils.getDisplay());
+    Log.d(TAG, "getDevice =  " + Utils.getDevice());
+    Log.d(TAG, "getSystemModel =  " + Utils.getSystemModel());
+    Log.d(TAG, "getDeviceBrand =  " + Utils.getDeviceBrand());
+    Log.d(TAG, "getCpuName =  " + Utils.getCpuName());
+    Log.d(TAG, "getCpuInfo =  " + Arrays.toString(Utils.getCpuInfo()));
 
   }
 
@@ -69,6 +102,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
   }
 
   private void initListener() {
+    findViewById(R.id.btn_webview).setOnClickListener(this);
     findViewById(R.id.btn_getcsftoken).setOnClickListener(this);
     findViewById(R.id.btn_login).setOnClickListener(this);
     findViewById(R.id.btn_getfeed).setOnClickListener(this);
@@ -82,16 +116,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     findViewById(R.id.btn_following_cancel).setOnClickListener(this);
     findViewById(R.id.btn_media_like).setOnClickListener(this);
     findViewById(R.id.btn_media_unlike).setOnClickListener(this);
-
+    findViewById(R.id.btn_following_create_users).setOnClickListener(this);
+    findViewById(R.id.btn_current).setOnClickListener(this);
+    findViewById(R.id.btn_confirm_sms_code).setOnClickListener(this);
+    etSmsCode = findViewById(R.id.et_sms_code);
 
   }
 
   private void initOkManager() {
     OKConfigData okConfigData = new OKConfigData();
-    ClearableCookieJar cookieJar = new PersistentCookieJar(new SetCookieCache(),
-        new SharedPrefsCookiePersistor(mContext));
+    SharedPrefsCookiePersistor sharedPrefsCookiePersistor = new SharedPrefsCookiePersistor(
+        MainActivity.this);
+    ClearableCookieJar cookieJar = new CustomPersistentCookieJar(new SetCookieCache(),
+        sharedPrefsCookiePersistor);
+//    sharedPrefsCookiePersistor.clear();
     okConfigData.setCookiesJar(cookieJar);
     OkHttpManager.getInstance().init(okConfigData);
+
+//    IGCommonFieldsManager.getInstance().saveCsrftoken("gUdHaMgyW8ZKt5Ewz05oEqH1gDfPwTyw");
+//
+//    IGCommonFieldsManager.getInstance().savePKID("10171477409");
+
+//    IGCommonFieldsManager.getInstance().saveCsrftoken("gUdHaMgyW8ZKt5Ewz05oEqH1gDfPwTyw");
+//
+//    IGCommonFieldsManager.getInstance().savePKID("32834908");
+
+
 
   }
 
@@ -100,20 +150,53 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
   public void onClick(View v) {
     int id = v.getId();
     switch (id) {
+      case R.id.btn_webview:
+        String url = "https://www.instagram.com/";
+        // String url = "https://www.instagram.com/accounts/login/";
+
+
+        WebviewActivity.launch(MainActivity.this, url);
+        // InVisibleWebViewHelper.getInstance().initWebView(mContext,url);
+
+        // WebViewUtils.tryIns();
+        break;
       case R.id.btn_getcsftoken:
         getCsftoken();
+        // addTestCookie22();
         break;
 
       case R.id.btn_login:
-        login("joy.dingtone", "123456inst"); //10171477409
+//       login("joy.dingtone", "123456inst"); //10171477409
+        //   login("hansj_1009", "hansj10099");
+//       login("rainysunshine123", "Rainy521");
+
+        // login("bandelinis55_g", "H7jXuhZkFG");
+       login("zb102030_hf", "913C2V057f");
+
+        //    webLogin("hansj_1009", "hansj10099");
+
+//        login("zinkaya5", "12345qwert"); //10171477409
+        // login("pandachun666", "instagram_610261"); //10171477409
+//        login("2908_jose", "2908jose2"); //10171477409
+        //     login("hansj_1002", "hansj1002"); //10171477409
+//        login("squallcpp", "Zhcsnow_1"); //10171477409
+//        login("2908_jose", "2908jose2"); //10171477409
+        //    login("galia.5737", "1234qwer"); //10171477409
+        //login("squallcpp", "Zhcsnow_1"); //10171477409
+        //   login("princebanana12", "wangf1234"); //10171477409
         //login("baily.teesy", "bj12345678");
         // login("wwwaitinglwt", "669845lwt");  //pkId = 322961280
         //login("pidan_baby", "destiny411"); // pkId = 6500982440
         //login("pidan_baby", "destiny411"); // pkId = 6500982440
         break;
+
+      case R.id.btn_current:
+        getCurrentInfo();
+        break;
+
       case R.id.btn_getfeed:
-        getFeed(true, "");
-        //getAllFeed();
+        // getFeed(true, "");
+       getAllFeed();
         break;
       case R.id.btn_getfeedlike:
         getFeedLiked(true, "");
@@ -135,13 +218,40 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         break;
 
       case R.id.btn_getUserInfo:
-        //getUserInfo("322961280");
+        // getUserInfoByUserId("322961280");
         //getUserInfoByUserName("shutongjia0425265");
-        getUserInfoByUserName("shutongjia04252653333");
+        for (int i = 0; i < 500; i++) {
+          try {
+            Thread.sleep(1 * 100);
+          } catch (InterruptedException e) {
+            e.printStackTrace();
+          }
+          getUserInfoByUserName("Jack" + i);
+        }
+
+        // getUserInfoByUserNameWeb("squallcpp");
+//
+//        String requestUrl = "https://www.instagram.com/web/search/topsearch/?context=blended&query=joy.dingtone";
+//        OkHttpManager.getInstance().get(requestUrl).execute(new StringResponseHandler() {
+//
+//          @Override
+//          public void onSuccess(int statusCode, String response) {
+//          }
+//
+//          @Override
+//          public void onFailure(int errorCode, String errorMsg) {
+//            super.onFailure(errorCode, errorMsg);
+//          }
+//        });
+//
+
         break;
 
       case R.id.btn_following_create:
         followingCreate("10171477409");
+        break;
+      case R.id.btn_following_create_users:
+        followingCreateUsers();
         break;
 
       case R.id.btn_following_cancel:
@@ -155,7 +265,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
       case R.id.btn_media_unlike:
         mediaUnLike("1986863750145515832_10171477409");
         break;
-
+      case R.id.btn_confirm_sms_code:
+       String code = etSmsCode.getText().toString();
+        WebViewUtils.passingSmsCodeParameter(InVisibleWebViewHelper.getInstance().getWebView(),code);
+        break;
       default:
         break;
     }
@@ -173,22 +286,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (null != getHeaderRequest) {
           String csrfCookie = getHeaderRequest.getCsrfCookie();
           Log.d(TAG, "get Csftoken onSuccess，csrfCookie =  " + csrfCookie);
+//          addTestCookie();
+//          addTestCookie22();
+
         }
       }
 
       @Override
       public void onFailure(int errorCode, String errorMsg) {
-        Log.d(TAG, "get Csftoken onFailure ");
+        Log.d(TAG, "get Csftoken onFailure ： " + errorMsg);
+        ChallengeRequired challengeRequired = IGGsonUtil
+            .parseJsonStrToBean(errorMsg, ChallengeRequired.class);
+        WebviewActivity.launch(MainActivity.this, challengeRequired.getChallenge().getUrl());
       }
     });
 
   }
 
 
+
+
   /**
    * Login
-   * @param userName
-   * @param pwd
    */
   private void login(String userName, String pwd) {
     LoginRequest loginRequest = new LoginRequest(userName, pwd);
@@ -204,15 +323,65 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
           }
           Log.d(TAG, "pkId = " + pkId);
         }
+
+        CookieManager cookieManager = CookieManager.getInstance();
+        String CookieStr = cookieManager
+            .getCookie("https://i.instagram.com/api/v1/accounts/login/");
+        Log.d(TAG, "CookieStr = " + CookieStr);
       }
 
       @Override
       public void onFailure(int errorCode, String errorMsg) {
         LLog.d(TAG, String.format("errorCode= %s , errorMsg = %s", errorCode, errorMsg));
+        if(!TextUtils.isEmpty(errorMsg) && errorMsg.contains("inactive user")){
+          InactiveUser inactiveUser =  IGGsonUtil
+              .parseJsonStrToBean(errorMsg, InactiveUser.class);
+          //WebviewActivity.launch(MainActivity.this, inactiveUser.getHelp_url());
+        }
+
+//        ChallengeRequired challengeRequired = IGGsonUtil
+//            .parseJsonStrToBean(errorMsg, ChallengeRequired.class);
+//        WebviewActivity.launch(MainActivity.this, challengeRequired.getChallenge().getUrl());
       }
     });
 
   }
+
+
+  private void getCurrentInfo(){
+    CurrentUserInfoRequest currentUserInfoRequest = new CurrentUserInfoRequest();
+    currentUserInfoRequest.execute(new InsRequestCallBack<CurrentUserInfoResponse>() {
+      @Override
+      public void onSuccess(int statusCode, CurrentUserInfoResponse insBaseData) {
+        Log.d(TAG, "currentUserInfoRequest onSuccess= " + insBaseData.getUser().getFull_name());
+
+      }
+
+      @Override
+      public void onFailure(int errorCode, String errorMsg) {
+        Log.d(TAG, "currentUserInfoRequest onFailure= " + errorMsg);
+      }
+    });
+  }
+  private void webLogin(String userName, String pwd) {
+    me.dt.inswebapi.request.api.login.LoginRequest loginRequest =
+        new me.dt.inswebapi.request.api.login.LoginRequest(userName, pwd);
+    loginRequest.execute(
+        new me.dt.inswebapi.request.InsRequestCallBack<me.dt.inswebapi.request.api.login.LoginResponseData>() {
+          @Override
+          public void onSuccess(int i,
+              me.dt.inswebapi.request.api.login.LoginResponseData loginResponseData) {
+            Log.d(TAG, "web api login 成功 = ");
+          }
+
+          @Override
+          public void onFailure(int i, String s) {
+            Log.d(TAG, "web api login 失败 = " + s);
+
+          }
+        });
+  }
+
 
   /**
    * 获取所有帖子
@@ -236,8 +405,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
   /**
    * 获取帖子
-   * @param isFirstPage
-   * @param nextMaxId
    */
 
   private void getFeed(boolean isFirstPage, String nextMaxId) {
@@ -325,8 +492,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
   /**
    * 获取Followers
-   * @param isFirstPage
-   * @param nextMaxId
    */
   private void getFollowers(boolean isFirstPage, String nextMaxId) {
 
@@ -335,7 +500,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
     String userId = IGCommonFieldsManager.getInstance().getPKID();
     String userId1 = " 7761457415";
-    GetFollowersRequest getFollowersRequest = new GetFollowersRequest(isFirstPage, userId1,
+    GetFollowersRequest getFollowersRequest = new GetFollowersRequest(isFirstPage, userId,
         nextMaxId);
     getFollowersRequest.execute(new InsRequestCallBack<FollowersResponseData>() {
       @Override
@@ -367,8 +532,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
   /**
    * 获取Following
-   * @param isFirstPage
-   * @param nextMaxId
    */
   private void getFollowing(boolean isFirstPage, String nextMaxId) {
 
@@ -382,7 +545,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     request.execute(new InsRequestCallBack<FollowingResponseData>() {
       @Override
       public void onSuccess(int statusCode, FollowingResponseData response) {
-        Log.d(TAG, "getFollowers onSuccess ");
+        Log.d(TAG, "getFollowing onSuccess ");
         mFollowingResponseData.setBig_list(response.isBig_list());
         mFollowingResponseData.setNext_max_id(response.getNext_max_id());
         mFollowingResponseData
@@ -392,7 +555,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (!TextUtils.isEmpty(response.getNext_max_id())) {
           getFollowing(false, mFollowingResponseData.getNext_max_id());
         } else {
-          Log.d(TAG, String.format("getFollowers request end and the size = %s ",
+          Log.d(TAG, String.format("getFollowing request end and the size = %s ",
               mFollowingResponseData.getUsers().size()));
         }
       }
@@ -428,7 +591,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
   /**
    * 获取某一条帖子的Likers
-   * @param itemsBean
    */
   private void getMediaLikersByItem(final FeedResponseData.ItemsBean itemsBean) {
 
@@ -458,7 +620,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
   /**
-   *  获取Comments
+   * 获取Comments
    */
   private void getMediaComments() {
     List<FeedResponseData.ItemsBean> itemsBeanList = mFeedResponseDataAll.getItems();
@@ -504,7 +666,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
   /**
    * 根据userId获取用户信息
-   * @param userId
    */
   private void getUserInfoByUserId(String userId) {
     UserInfoWithIDRequest userInfoRequest = new UserInfoWithIDRequest(userId);
@@ -523,7 +684,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
   /**
    * 根据userName获取用户信息
-   * @param userName
    */
   private void getUserInfoByUserName(String userName) {
     UserInfoWithNameRequest userInfoRequest = new UserInfoWithNameRequest(userName);
@@ -541,10 +701,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     });
   }
 
+  private void getUserInfoByUserNameWeb(String userName) {
+    UserInfoWebRequest webRequest = new UserInfoWebRequest();
+    webRequest.execute(userName);
+  }
 
   /**
    * 关注某人
-   * @param userId
    */
   private void followingCreate(String userId) {
 
@@ -569,9 +732,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
   }
 
 
+  private void followingCreateUsers() {
+
+  }
+
+
   /**
    * 取关某人
-   * @param userId
    */
   private void followingCancel(String userId) {
 
@@ -596,7 +763,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
   /**
    * 喜欢某条帖子
-   * @param mediaID
    */
   private void mediaLike(String mediaID) {
 
@@ -616,7 +782,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
   /**
    * 取消喜欢某条帖子
-   * @param mediaID
    */
   private void mediaUnLike(String mediaID) {
 
@@ -633,6 +798,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
       }
     });
   }
+
 
 
 }

@@ -26,5 +26,13 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     api project(':library')
-    compile 'com.github.franmontiel:PersistentCookieJar:v1.0.1'
+    api 'com.github.franmontiel:PersistentCookieJar:v1.0.1'
+
+    api 'me.dt.inswebapi:lib_inswebapi:1.0.15'
+//    implementation 'me.dt.inswebapi:lib_inswebapi:1.0.15'
+    api 'com.tencent:mmkv:1.0.22'
+    api 'me.dt.libase:mmkv:1.0.2'
+    api 'com.google.code.gson:gson:2.8.5'
+    api 'me.dt.tracker:library:1.0.0'
+
 }
